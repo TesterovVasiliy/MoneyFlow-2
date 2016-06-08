@@ -95,6 +95,7 @@ public class AddNewExpenseDialog extends DialogFragment implements LoaderManager
 
         String[] arrayCursor = new String[data.getCount()];
 
+
         int columnIndex = data.getColumnIndex(Prefs.EXPENSE_NAMES_FIELD_NAME);
         for (data.moveToFirst(); !(data.isAfterLast()); data.moveToNext()) {
 

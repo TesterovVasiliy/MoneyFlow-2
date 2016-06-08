@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.rash1k.moneyflow.R;
+import com.rash1k.moneyflow.activities.DashboardActivity;
+import com.rash1k.moneyflow.adapters.DashboardPagerAdapter;
 import com.rash1k.moneyflow.util.Prefs;
 
 import java.util.HashMap;
@@ -26,6 +28,9 @@ public class ExpensesFragment extends Fragment implements LoaderManager.LoaderCa
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        ((DashboardActivity) getActivity()).setFragmentInfo(DashboardPagerAdapter.FRAGMENT_EXPENSES);
+
         View view = inflater.inflate(R.layout.fragment_expenses, container, false);
         tvCurrentFragmentExpenses = (TextView) view.findViewById(R.id.tvCurrentFragmentExpenses);
 
@@ -72,22 +77,22 @@ public class ExpensesFragment extends Fragment implements LoaderManager.LoaderCa
 
             Cursor cursor = getContext().getContentResolver().query(Prefs.URI_EXPENSES, new String[]{Prefs.EXPENSES_FIELD_VOLUME}, null, null, null);
             cursor.moveToFirst();
-            if (cursor != null) {
-                if (cursor.getCount() != 0) {
-                    int value = 0;
+            if (cursor != null && cursor.getCount() != 0) {
 
-                    do {
+                int value = 0;
 
-                        value += cursor.getInt(cursor.getColumnIndex(Prefs.EXPENSES_FIELD_VOLUME));
-                    } while (cursor.moveToNext());
+                do {
+
+                    value += cursor.getInt(cursor.getColumnIndex(Prefs.EXPENSES_FIELD_VOLUME));
+                } while (cursor.moveToNext());
 
 
-                    result.put(CURRENT_MONTH, Integer.toString(value));
-                    deliverResult(result);
-                } else {
-                    result.put(CURRENT_MONTH, "0");
-                }
+                result.put(CURRENT_MONTH, Integer.toString(value));
+                deliverResult(result);
+            } else {
+                result.put(CURRENT_MONTH, "0");
             }
         }
     }
+
 }

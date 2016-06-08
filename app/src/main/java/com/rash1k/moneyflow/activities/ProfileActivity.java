@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 
 import com.rash1k.moneyflow.R;
 
@@ -20,10 +21,7 @@ public class ProfileActivity extends PreferenceActivity {
     }
 
 
-
-
-
-    public static class MyPreferenceFragment extends PreferenceFragment  implements SharedPreferences.OnSharedPreferenceChangeListener{
+    public static class MyPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -37,7 +35,16 @@ public class ProfileActivity extends PreferenceActivity {
 
             EditTextPreference editTextPreference = (EditTextPreference) findPreference(key);
             editTextPreference.setSummary(summary);
+
+            SwitchPreference switchPreference = (SwitchPreference) findPreference(key);
+
+            CharSequence summaryOnSwitchPreferenceSex = switchPreference.getSwitchTextOn();
+            CharSequence summaryOffSwitchPreferenceSex = switchPreference.getSwitchTextOff();
+
+            switchPreference.setSummaryOn(summaryOnSwitchPreferenceSex);
+            switchPreference.setSummaryOff(summaryOffSwitchPreferenceSex);
         }
+
 
         @Override
         public void onResume() {

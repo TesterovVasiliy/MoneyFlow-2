@@ -42,7 +42,7 @@
         <item>60</item>
         <item>180</item>
         <item>360</item>
-        <item>-1</item>
+        <item>-1</item>0)
     </string-array>
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
