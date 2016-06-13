@@ -1,7 +1,6 @@
 package com.rash1k.moneyflow.activities;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -9,7 +8,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,17 +18,14 @@ import com.rash1k.moneyflow.dialogs.AddNewExpenseDialog;
 import com.rash1k.moneyflow.dialogs.AddNewIncomeDialog;
 import com.rash1k.moneyflow.util.Prefs;
 
-public class DashboardActivity extends AppCompatActivity implements View.OnClickListener, ViewPager.OnPageChangeListener {
+public class DashboardActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener,
+        View.OnClickListener, TabLayout.OnTabSelectedListener {
 
-    //    Test
-    private DashboardPagerAdapter dashboardPagerAdapter;
-    private ViewPager viewPager;
     private Toolbar toolbar;
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
 
-    int tabPosition = 0;
-
-
+    private int tabPosition = 0;
+    private ViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,41 +34,28 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
 
+        DashboardPagerAdapter dashboardPagerAdapter = new DashboardPagerAdapter(this,
+                getSupportFragmentManager());
 
-        dashboardPagerAdapter = new DashboardPagerAdapter(this, getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.vpDashboard);
         viewPager.setAdapter(dashboardPagerAdapter);
         viewPager.addOnPageChangeListener(this);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabDashBoard);
         tabLayout.setupWithViewPager(viewPager);
-
+        tabLayout.setOnTabSelectedListener(this);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setVisibility(View.GONE);
-       /* fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-*/
-        findViewById(R.id.btnDashBoardShowExpenses).setOnClickListener(this);
+        fab.setOnClickListener(this);
+
+
+//        findViewById(R.id.btnDashBoardShowExpenses).setOnClickListener(this);
 
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main_cashflow, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-
         switch (tabPosition) {
 
             case DashboardPagerAdapter.FRAGMENT_CASH_FLOW:
@@ -87,28 +69,37 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 break;
         }
 
-        return super.onPrepareOptionsMenu(menu);
+        Log.d(Prefs.LOG_TAG, "onPrepareOptionsMenu: " + menu.size());
+        return true;
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-    }
+   /* @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        switch (tabPosition) {
+
+            case DashboardPagerAdapter.FRAGMENT_CASH_FLOW:
+
+                getMenuInflater().inflate(R.menu.main_cashflow, menu);
+                break;
+            case DashboardPagerAdapter.FRAGMENT_EXPENSES:
+                getMenuInflater().inflate(R.menu.menu_expenses, menu);
+                break;
+            case DashboardPagerAdapter.FRAGMENT_INCOMES:
+                getMenuInflater().inflate(R.menu.menu_incomes, menu);
+                break;
+        }
+        Log.d(Prefs.LOG_TAG, "onPrepareOptionsMenu: " + menu.size());
+        return super.onPrepareOptionsMenu(menu);
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_list_expenses:
-//                AddNewExpenseDialog addNewExpenseDialog = new AddNewExpenseDialog();
-//                addNewExpenseDialog.show(getSupportFragmentManager(), "addExpense");
-
-
                 startActivity(new Intent(this, ExpensesActivity.class));
-                //Toast.makeText(this, "Click on expense", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.item_list_incomes:
-//                AddNewIncomeDialog addNewIncomeDialog = new AddNewIncomeDialog();
-//                addNewIncomeDialog.show(getSupportFragmentManager(), "addIncome");
+                startActivity(new Intent(this, IncomesActivity.class));
                 break;
 
             case R.id.item_user_profile:
@@ -118,7 +109,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         return true;
     }
 
-    // вывод в лог данных из курсора
+    /*// вывод в лог данных из курсора
     void logCursor(Cursor c) {
         if (c != null) {
             if (c.moveToFirst()) {
@@ -133,9 +124,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             }
         } else
             Log.d(Prefs.LOG_TAG, "Cursor is null");
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onClick(View v) {
 
         Cursor c;
@@ -152,11 +143,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 startActivity(intent);
                 break;
 
-            // TODO: 04.06.2016 Add btnDashBoardShowIncomes.
-        }
-    }
 
-    public void setFragmentInfo(int position) {
+        }
+    }*/
+
+    /*public void setFragmentInfo(int position) {
         switch (position) {
 
             case DashboardPagerAdapter.FRAGMENT_CASH_FLOW:
@@ -170,18 +161,16 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 break;
         }
         setSupportActionBar(toolbar);
-    }
+    }*/
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        Log.d(Prefs.LOG_TAG, "onPageScrolled: position: " + position + " positionOffset: " + positionOffset + " positionOffsetPixels: " + positionOffsetPixels);
 
     }
 
-    @Override
+   /* @Override
     public void onPageSelected(int position) {
         tabPosition = position;
-        Log.d(Prefs.LOG_TAG, "onPageSelected: position: " + position);
 
         switch (position) {
             case DashboardPagerAdapter.FRAGMENT_CASH_FLOW:
@@ -191,32 +180,69 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             case DashboardPagerAdapter.FRAGMENT_EXPENSES:
                 toolbar.setTitle(R.string.title_tab_expenses);
                 fab.setVisibility(View.VISIBLE);
-                fab.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AddNewExpenseDialog addNewExpenseDialog = new AddNewExpenseDialog();
-                        addNewExpenseDialog.show(getSupportFragmentManager(), "addExpense");
-                    }
-                });
                 break;
             case DashboardPagerAdapter.FRAGMENT_INCOMES:
                 toolbar.setTitle(R.string.title_tab_incomes);
                 fab.setVisibility(View.VISIBLE);
-                fab.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        AddNewIncomeDialog addNewIncomeDialog = new AddNewIncomeDialog();
-                        addNewIncomeDialog.show(getSupportFragmentManager(), "addIncome");
-                    }
-                });
                 break;
         }
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
         invalidateOptionsMenu();
+    }*/
+
+
+    @Override
+    public void onPageSelected(int position) {
+
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        Log.d(Prefs.LOG_TAG, "onPageScrollStateChanged: state: " + state);
+    }
+
+
+    @Override
+    public void onClick(View v) {
+
+        switch (tabPosition) {
+            case DashboardPagerAdapter.FRAGMENT_EXPENSES:
+                AddNewExpenseDialog addNewExpenseDialog = new AddNewExpenseDialog();
+                addNewExpenseDialog.show(getSupportFragmentManager(), "addExpense");
+                break;
+            case DashboardPagerAdapter.FRAGMENT_INCOMES:
+                AddNewIncomeDialog addNewIncomeDialog = new AddNewIncomeDialog();
+                addNewIncomeDialog.show(getSupportFragmentManager(), "addIncome");
+                break;
+        }
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        tabPosition = tab.getPosition();
+        switch (tabPosition) {
+            case DashboardPagerAdapter.FRAGMENT_CASH_FLOW:
+                toolbar.setTitle(R.string.app_name);
+                fab.setVisibility(View.GONE);
+                break;
+            case DashboardPagerAdapter.FRAGMENT_EXPENSES:
+                toolbar.setTitle(R.string.title_tab_expenses);
+                fab.setVisibility(View.VISIBLE);
+                break;
+            case DashboardPagerAdapter.FRAGMENT_INCOMES:
+                toolbar.setTitle(R.string.title_tab_incomes);
+                fab.setVisibility(View.VISIBLE);
+                break;
+        }
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
     }
 }

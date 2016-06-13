@@ -58,7 +58,6 @@ public class MyIntentService extends IntentService {
                     handleActionInsertExpense(nameExpense, volumeExpense, criticalExpense);
                     break;
                 case ACTION_INSERT_INCOME:
-
                     final String nameIncome = intent.getStringExtra(EXTRA_INCOME_NAME);
                     final double volumeIncome = intent.getDoubleExtra(EXTRA_INCOME_VOLUME, 0);
                     handleActionInsertIncome(nameIncome, volumeIncome);
@@ -102,7 +101,7 @@ public class MyIntentService extends IntentService {
 
         ContentValues cvIncomes = new ContentValues();
 
-        cvIncomes.put(Prefs.INCOMES_FIELD_DATA, date);
+        cvIncomes.put(Prefs.INCOMES_FIELD_DATE, date);
         cvIncomes.put(Prefs.INCOMES_FIELD_VOLUME, volume);
         cvIncomes.put(Prefs.INCOMES_FIELD_ID_PASSIVE, insertedId);
 

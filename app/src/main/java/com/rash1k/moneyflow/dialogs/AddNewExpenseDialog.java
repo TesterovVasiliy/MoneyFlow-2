@@ -35,7 +35,7 @@ public class AddNewExpenseDialog extends DialogFragment implements LoaderManager
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_add_expency, null, false);
-        //TODO set adapter for AutoCompleteTextView
+
 
         etVolumeOfExpenses = (EditText) view.findViewById(R.id.etVolumeOfExpency);
         acNameOfExpenses = (AutoCompleteTextView) view.findViewById(R.id.acNameOfExpense);

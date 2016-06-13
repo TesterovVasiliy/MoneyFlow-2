@@ -44,6 +44,7 @@
             android:summaryOff="@string/pref_summary_sex_off"
             android:inputType="textAutoCorrect"
             android:key="@string/pref_key_sex"
+            android:defaultValue="true"
             android:title="@string/pref_title_sex"/>
     </PreferenceCategory>
 

@@ -152,7 +152,7 @@ public class MyContentProvider extends ContentProvider {
         getContext().getContentResolver().notifyChange(uri, null);
 
         return updateId;
-        // TODO: Implement this to handle requests to update one or more rows.
+
     }
 
     @Override

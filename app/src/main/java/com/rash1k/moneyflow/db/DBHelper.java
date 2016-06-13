@@ -53,7 +53,7 @@ Table expense_names
             Prefs.FIELD_ID,
             Prefs.INCOMES_FIELD_ID_PASSIVE,
             Prefs.INCOMES_FIELD_VOLUME,
-            Prefs.INCOMES_FIELD_DATA);
+            Prefs.INCOMES_FIELD_DATE);
 
                  /*
     Table income_names

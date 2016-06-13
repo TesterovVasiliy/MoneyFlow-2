@@ -21,7 +21,7 @@ public class DashboardPagerAdapter extends FragmentPagerAdapter {
     public static final int FRAGMENT_EXPENSES = 1;
     public static final int FRAGMENT_INCOMES = 2;
 
-    Context context;
+    private Context context;
 
     public DashboardPagerAdapter(Context context, FragmentManager fm) {
         super(fm);

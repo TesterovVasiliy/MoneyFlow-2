@@ -116,4 +116,6 @@
     <string name="negative_button_add_new_income_dialog">Dismiss</string>
     <string name="pref_summary_sex_on">Male</string>
     <string name="pref_summary_sex_off">Female</string>
+    <string name="expenses_activity_name">Expenses</string>
+    <string name="incomes_activity_name">Incomes</string>
 </resources>

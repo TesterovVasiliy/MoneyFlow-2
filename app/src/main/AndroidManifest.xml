@@ -23,6 +23,7 @@
         </activity>
         <activity
             android:name=".activities.ExpensesActivity"
+            android:label="@string/expenses_activity_name"
             android:parentActivityName=".activities.DashboardActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -31,6 +32,7 @@
 
         <activity
             android:name=".activities.IncomesActivity"
+            android:label="@string/incomes_activity_name"
             android:parentActivityName=".activities.DashboardActivity">
 
             <meta-data
@@ -42,7 +44,13 @@
 
         <activity
             android:name=".activities.ProfileActivity"
-            android:label="@string/title_activity_profile" />
+            android:label="@string/title_activity_profile"
+            android:parentActivityName=".activities.DashboardActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.DashboardActivity" />
+        </activity>
 
         <service
             android:name=".services.MyIntentService"

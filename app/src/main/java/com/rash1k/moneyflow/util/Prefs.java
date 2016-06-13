@@ -55,7 +55,7 @@ public final class Prefs {
     public static final String TABLE_NAME_INCOMES = "incomes";
     public static final String INCOMES_FIELD_ID_PASSIVE = "id_passive";
     public static final String INCOMES_FIELD_VOLUME = "volume";
-    public static final String INCOMES_FIELD_DATA = "date";
+    public static final String INCOMES_FIELD_DATE = "date";
 
     //The Table Income_names:
 
