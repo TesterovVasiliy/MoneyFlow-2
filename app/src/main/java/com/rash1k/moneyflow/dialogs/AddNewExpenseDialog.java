@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -28,16 +29,16 @@ public class AddNewExpenseDialog extends DialogFragment implements LoaderManager
     private AutoCompleteTextView acNameOfExpenses;
     private CheckBox chbCritical;
 
-
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_add_expency, null, false);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.activity_add_new_expense_dialog, null, false);
 
 
-        etVolumeOfExpenses = (EditText) view.findViewById(R.id.etVolumeOfExpency);
+        etVolumeOfExpenses = (EditText) view.findViewById(R.id.etVolumeOfExpense);
         acNameOfExpenses = (AutoCompleteTextView) view.findViewById(R.id.acNameOfExpense);
         chbCritical = (CheckBox) view.findViewById(R.id.chbCriticalExpense);
 
@@ -79,7 +80,7 @@ public class AddNewExpenseDialog extends DialogFragment implements LoaderManager
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == Prefs.ID_LOADER_EXPENSE_NAMES) {
-            return new CursorLoader(getContext(), Prefs.URI_EXPENSES_NAMES, null, null, null, null);
+            return new CursorLoader(getActivity(), Prefs.URI_EXPENSES_NAMES, null, null, null, null);
         }
         return null;
     }
@@ -93,19 +94,21 @@ public class AddNewExpenseDialog extends DialogFragment implements LoaderManager
                 new int[]{android.R.id.text1},
                 Adapter.NO_SELECTION);*/
 
+        int i = 0;
         String[] arrayCursor = new String[data.getCount()];
 
 
         int columnIndex = data.getColumnIndex(Prefs.EXPENSE_NAMES_FIELD_NAME);
-        for (data.moveToFirst(); !(data.isAfterLast()); data.moveToNext()) {
+        for (data.moveToFirst(); (i<data.getCount() &&(!data.isAfterLast())); data.moveToNext(),i++) {
 
-            arrayCursor[columnIndex] = data.getString(columnIndex);
+            arrayCursor[i] = data.getString(columnIndex);
 
         }
 
         ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, arrayCursor);
 
         acNameOfExpenses.setAdapter(arrayAdapter);
+
 
     }
 

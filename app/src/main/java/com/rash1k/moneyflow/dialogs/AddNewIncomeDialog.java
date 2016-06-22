@@ -83,19 +83,25 @@ public class AddNewIncomeDialog extends DialogFragment implements LoaderManager.
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        int i = 0;
+
         String[] arrayCursor = new String[data.getCount()];
 
         int columnIndex = data.getColumnIndex(Prefs.EXPENSE_NAMES_FIELD_NAME);
-        for (data.moveToFirst(); !(data.isAfterLast()); data.moveToNext()) {
+        for (data.moveToFirst(); (i < data.getCount() && !(data.isAfterLast())); data.moveToNext(),i++) {
 
-            arrayCursor[columnIndex] = data.getString(columnIndex);
+            arrayCursor[i] = data.getString(columnIndex);
         }
         ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, arrayCursor);
         acNameOfIncome.setAdapter(arrayAdapter);
+
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(Prefs.LOG_TAG, "onLoaderReset: " + loader);
+
     }
 }

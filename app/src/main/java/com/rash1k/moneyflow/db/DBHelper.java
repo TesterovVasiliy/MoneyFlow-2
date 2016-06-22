@@ -18,9 +18,9 @@ public class DBHelper extends SQLiteOpenHelper {
     * */
 
     private static final String CREATE_TABLE_EXPENSES = String.format(
-            "create table " + Prefs.TABLE_NAME_EXPENSES
-                    + " ( %s integer primary key autoincrement, %s integer," +
-                    " %s double, %s text);",
+            "create table %s (%s integer primary key autoincrement, " +
+            "%s integer, %s real, %s text);",
+            Prefs.TABLE_NAME_EXPENSES,
             Prefs.FIELD_ID,
             Prefs.EXPENSES_FIELD_ID_PASSIVE,
             Prefs.EXPENSES_FIELD_VOLUME,
@@ -34,8 +34,8 @@ Table expense_names
 */
 
     private static final String CREATE_TABLE_EXPENSE_NAMES = String.format(
-            "create table " + Prefs.TABLE_NAME_EXPENSE_NAMES
-                    + " ( %s integer primary key autoincrement, %s text, %s integer);",
+            "CREATE TABLE %s (%s integer primary key autoincrement, %s text, %s integer);",
+            Prefs.TABLE_NAME_EXPENSE_NAMES,
             Prefs.FIELD_ID,
             Prefs.EXPENSE_NAMES_FIELD_NAME,
             Prefs.EXPENSE_NAMES_FIELD_CRITICAL);
@@ -48,7 +48,7 @@ Table expense_names
     * */
 
     private static final String CREATE_TABLE_INCOMES = String.format(
-            "CREATE TABLE %s (%s integer primary key autoincrement, %s integer, %s double, %s text);",
+            "CREATE TABLE %s (%s integer primary key autoincrement, %s integer, %s real, %s text);",
             Prefs.TABLE_NAME_INCOMES,
             Prefs.FIELD_ID,
             Prefs.INCOMES_FIELD_ID_PASSIVE,
@@ -68,6 +68,32 @@ Table expense_names
             Prefs.INCOME_NAMES_FIELD_NAME);
 
 
+    /*
+    * Table monthlyCash
+    * - id
+    * - month - accounting monthly
+    * - year - accounting year
+    * - expense - expense for current monthly
+    * - income - income for current monthly
+    * - cashFlow - the difference between income and expenditure
+    * - entry-balance  cashFlow + start-up balance
+    * e-plane - planned expense for next month
+    * i-plane - planed income for next month
+    */
+      private static final String CREATE_TABLE_MONTHLY_CASH = String.format(
+            "CREATE TABLE %s (%s integer primary key autoincrement, %s text, %s integer, " +
+                    "%s real, %s real, %s real, %s real, %s real, %s real);",
+            Prefs.TABLE_NAME_MONTHLY_CASH,
+            Prefs.FIELD_ID,
+            Prefs.MONTHLY_FIELD_MONTH,
+            Prefs.MONTHLY_FIELD_YEAR,
+            Prefs.MONTHLY_FIELD_CASH_FLOW,
+            Prefs.MONTHLY_FIELD_EXPENSE,
+            Prefs.MONTHLY_FIELD_INCOME,
+            Prefs.MONTHLY_FIELD_ENTRY_BALANCE,
+            Prefs.MONTHLY_FIELD_EXPENSE_PLAN,
+            Prefs.MONTHLY_FIELD_INCOME_PLAN);
+
     public DBHelper(Context context, int version) {
         super(context, Prefs.DB_NAME, null, version);
     }
@@ -78,6 +104,7 @@ Table expense_names
         db.execSQL(CREATE_TABLE_EXPENSE_NAMES);
         db.execSQL(CREATE_TABLE_INCOMES);
         db.execSQL(CREATE_TABLE_INCOME_NAMES);
+        db.execSQL(CREATE_TABLE_MONTHLY_CASH);
     }
 
     @Override
@@ -88,6 +115,7 @@ Table expense_names
             db.execSQL(CREATE_TABLE_EXPENSE_NAMES);
             db.execSQL(CREATE_TABLE_INCOMES);
             db.execSQL(CREATE_TABLE_INCOME_NAMES);
+            db.execSQL(CREATE_TABLE_MONTHLY_CASH);
         } else {
             Log.d(Prefs.LOG_TAG, "You have current version");
         }

@@ -56,11 +56,22 @@ public final class Prefs {
     public static final String INCOMES_FIELD_ID_PASSIVE = "id_passive";
     public static final String INCOMES_FIELD_VOLUME = "volume";
     public static final String INCOMES_FIELD_DATE = "date";
-
     //The Table Income_names:
 
     public static final String TABLE_NAME_INCOME_NAMES = "income_names";
     public static final String INCOME_NAMES_FIELD_NAME = "name";
+
+//    The Table Monthly_cash:
+
+    public static final String TABLE_NAME_MONTHLY_CASH = "monthly_cash";
+    public static final String MONTHLY_FIELD_MONTH = "month";
+    public static final String MONTHLY_FIELD_YEAR = "year";
+    public static final String MONTHLY_FIELD_CASH_FLOW = "cash_flow";
+    public static final String MONTHLY_FIELD_EXPENSE = "expense";
+    public static final String MONTHLY_FIELD_INCOME = "income";
+    public static final String MONTHLY_FIELD_ENTRY_BALANCE = "entry_balance";
+    public static final String MONTHLY_FIELD_EXPENSE_PLAN = "expense_plan";
+    public static final String MONTHLY_FIELD_INCOME_PLAN = "income_plan";
 
     //The provider constants:
 
@@ -96,7 +107,15 @@ public final class Prefs {
     public static final String URI_ALL_INCOMES_PATH = "all_incomes";
     public static final Uri URI_ALL_INCOMES = Uri.parse(URI_SCHEMA_PROVIDER + URI_INCOME_NAMES_AUTHORITIES + "/" + URI_ALL_INCOMES_PATH);
 
+//    Monthly Cash:
+
+    public static final String URI_MONTHLY_PATH = "monthly_cash";
+    public static final String URI_MONTHLY_AUTHORITIES = "com.rash1k.moneyflow.provider";
+    public static final Uri URI_MONTHLY_CASH = Uri.parse(URI_SCHEMA_PROVIDER + URI_MONTHLY_AUTHORITIES + "/" + URI_MONTHLY_PATH);
+
     //Loader Constants
-    public static final int ID_LOADER_EXPENSE_NAMES = 1;
-    public static final int ID_LOADER_INCOME_NAMES = 1;
+    public static final int ID_LOADER_EXPENSE_NAMES = 2;
+    public static final int ID_LOADER_INCOME_NAMES = 3;
+    public static final int ID_LOADER_EXPENSES_FRAGMENT = 1;
+    public static final int ID_LOADER_INCOMES_FRAGMENT = 4;
 }

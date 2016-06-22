@@ -48,7 +48,7 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesAdapter.InnerV
         return mCursor.getCount();
     }
 
-    public  class InnerViewHolder extends RecyclerView.ViewHolder {
+    public static class InnerViewHolder extends RecyclerView.ViewHolder {
 
         public TextView tvName;
         public TextView tvVolume;

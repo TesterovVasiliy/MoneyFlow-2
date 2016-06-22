@@ -12,6 +12,9 @@ import android.net.Uri;
 import com.rash1k.moneyflow.db.DBHelper;
 import com.rash1k.moneyflow.util.Prefs;
 
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
 public class MyContentProvider extends ContentProvider {
 
     private SQLiteDatabase database;
@@ -25,6 +28,7 @@ public class MyContentProvider extends ContentProvider {
     private static final int URI_INCOMES_CODE = 4;
     private static final int URI_INCOME_NAMES_CODE = 5;
     private static final int URI_RAW_QUERY_ALL_INCOMES_CODE = 6;
+    private static final int URI_MONTHLY_CASH_CODE = 7;
 
     static {
         uriMatcher.addURI(Prefs.URI_EXPENSES_AUTHORITIES, Prefs.URI_EXPENSES_PATH, URI_EXPENSES_CODE);
@@ -36,7 +40,10 @@ public class MyContentProvider extends ContentProvider {
         uriMatcher.addURI(Prefs.URI_INCOMES_AUTHORITIES, Prefs.URI_INCOMES_PATH, URI_INCOMES_CODE);
 
         uriMatcher.addURI(Prefs.URI_INCOME_NAMES_AUTHORITIES, Prefs.URI_INCOME_NAMES_PATH, URI_INCOME_NAMES_CODE);
+
         uriMatcher.addURI(Prefs.URI_INCOME_NAMES_AUTHORITIES, Prefs.URI_ALL_INCOMES_PATH, URI_RAW_QUERY_ALL_INCOMES_CODE);
+
+        uriMatcher.addURI(Prefs.URI_MONTHLY_AUTHORITIES, Prefs.URI_MONTHLY_PATH, URI_MONTHLY_CASH_CODE);
     }
 
     public MyContentProvider() {
@@ -57,19 +64,57 @@ public class MyContentProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case URI_EXPENSES_CODE:
                 uri = insertUri(uri, Prefs.TABLE_NAME_EXPENSES, values);
+                updateDataMonthlyCash(values);
                 break;
             case URI_EXPENSE_NAME_CODE:
                 uri = insertUri(uri, Prefs.TABLE_NAME_EXPENSE_NAMES, values);
+                updateDataMonthlyCash(values);
                 break;
             case URI_INCOMES_CODE:
                 uri = insertUri(uri, Prefs.TABLE_NAME_INCOMES, values);
                 break;
             case URI_INCOME_NAMES_CODE:
                 uri = insertUri(uri, Prefs.TABLE_NAME_INCOME_NAMES, values);
+                break;
         }
         getContext().getContentResolver().notifyChange(uri, null);
         database.close();
         return uri;
+    }
+
+    private void updateDataMonthlyCash(ContentValues contentValues) {
+
+        double valueExpenses = 0;
+        double valueIncome = 0;
+
+        if (contentValues.containsKey(Prefs.EXPENSES_FIELD_VOLUME)) {
+            valueExpenses = contentValues.getAsDouble(Prefs.EXPENSES_FIELD_VOLUME);
+        } else {
+            valueIncome = contentValues.getAsDouble(Prefs.INCOMES_FIELD_VOLUME);
+        }
+
+
+        contentValues.clear();
+
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+
+        String month = String.format("%tb", gregorianCalendar);
+        String year = String.format("%tY", gregorianCalendar);
+
+        contentValues.put(Prefs.MONTHLY_FIELD_MONTH, month);
+        contentValues.put(Prefs.MONTHLY_FIELD_YEAR, year);
+        contentValues.put(Prefs.MONTHLY_FIELD_EXPENSE, valueExpenses);
+        contentValues.put(Prefs.MONTHLY_FIELD_INCOME, valueIncome);
+
+
+        database.execSQL(String.format(Locale.getDefault(),
+                "UPDATE %s SET %s=%s, %s=%s,%s=%s+%f-%f, %s=%s+%f, %s=%s+%f where %s='%s' AND %s='%s';",
+                Prefs.TABLE_NAME_MONTHLY_CASH, Prefs.MONTHLY_FIELD_MONTH, month,
+                Prefs.MONTHLY_FIELD_YEAR, year, Prefs.MONTHLY_FIELD_CASH_FLOW,
+                Prefs.MONTHLY_FIELD_CASH_FLOW, valueIncome, valueExpenses, Prefs.MONTHLY_FIELD_EXPENSE,
+                Prefs.MONTHLY_FIELD_EXPENSE, valueExpenses, Prefs.MONTHLY_FIELD_INCOME,
+                Prefs.MONTHLY_FIELD_INCOME, valueIncome, Prefs.MONTHLY_FIELD_MONTH, month,
+                Prefs.MONTHLY_FIELD_YEAR, year));
     }
 
     private Uri insertUri(Uri uri, String table, ContentValues values) {
@@ -108,6 +153,10 @@ public class MyContentProvider extends ContentProvider {
                 cursor = queryCursorBuilder(Prefs.RAW_QUERY_ALL_INCOMES, projection, selection,
                         selectionArgs, sortOrder);
                 break;
+            case URI_MONTHLY_CASH_CODE:
+                cursor = database.query(Prefs.TABLE_NAME_MONTHLY_CASH, projection, selection,
+                        selectionArgs, null, null, sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Non support URI");
         }
@@ -145,6 +194,9 @@ public class MyContentProvider extends ContentProvider {
 
                 updateId = database.update(Prefs.TABLE_NAME_INCOME_NAMES, values, selection, selectionArgs);
                 break;
+            case URI_MONTHLY_CASH_CODE:
+                updateId = database.update(Prefs.TABLE_NAME_MONTHLY_CASH, values, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Not yet implemented");
         }
@@ -172,6 +224,9 @@ public class MyContentProvider extends ContentProvider {
                 break;
             case URI_INCOME_NAMES_CODE:
                 deleteId = database.delete(Prefs.TABLE_NAME_INCOME_NAMES, selection, selectionArgs);
+                break;
+            case URI_MONTHLY_CASH_CODE:
+                deleteId = database.delete(Prefs.TABLE_NAME_MONTHLY_CASH, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Input correct URI");

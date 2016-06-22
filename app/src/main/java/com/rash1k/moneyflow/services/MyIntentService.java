@@ -1,6 +1,7 @@
 package com.rash1k.moneyflow.services;
 
 import android.app.IntentService;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -75,9 +76,13 @@ public class MyIntentService extends IntentService {
 
         Uri expenseNamesUri = getContentResolver().insert(Prefs.URI_EXPENSES_NAMES, cvExpenseName);
 
-        long insertedId = Long.parseLong(expenseNamesUri.getLastPathSegment());
+//        long insertedId = Long.parseLong(expenseNamesUri.getLastPathSegment());
 
-        String date = new SimpleDateFormat("dd MMM yyyy").format(new Date());
+        long insertedId = ContentUris.parseId(expenseNamesUri);
+
+//        String date = new SimpleDateFormat("dd MMM yyyy").format(new Date());
+
+        String date = SimpleDateFormat.getDateInstance().format(new Date());
 
 
         ContentValues cvExpenses = new ContentValues();
@@ -95,9 +100,12 @@ public class MyIntentService extends IntentService {
 
         Uri incomeNamesUri = getContentResolver().insert(Prefs.URI_INCOME_NAMES, cvIncomeNames);
 
-        long insertedId = Long.parseLong(incomeNamesUri.getLastPathSegment());
+//        long insertedId = Long.parseLong(incomeNamesUri.getLastPathSegment());
+        long insertedId = ContentUris.parseId(incomeNamesUri);
 
-        String date = new SimpleDateFormat("dd MMM yyyy").format(new Date());
+//        String date = new SimpleDateFormat("dd MMM yyyy").format(new Date());
+
+        String date = SimpleDateFormat.getDateInstance().format(new Date());
 
         ContentValues cvIncomes = new ContentValues();
 

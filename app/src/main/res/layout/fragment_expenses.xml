@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical">
+
+<TextView
+    android:id="@+id/tvCurrentFragmentExpenses"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:textSize="20sp"
+    android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/tvCurrentFragmentExpenses"
+
+    <com.rash1k.moneyflow.views.RoundChart
+        android:id="@+id/rcExpenses"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 
-</LinearLayout>
+</FrameLayout>
