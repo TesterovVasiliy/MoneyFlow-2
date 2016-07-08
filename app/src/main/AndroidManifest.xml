@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.rash1k.moneyflow">
 
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/moneyflow_icon_64"
@@ -64,8 +67,8 @@
             android:exported="false"/>
 
         <receiver
-            android:name=".Receivers.SMSBankReceiver"
-            android:permission="android.provider.Telephony.SMS_RECEIVED">
+            android:name=".receivers.SmsBankReceiver"
+            android:permission="android.permission.BROADCAST_SMS">
 
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
