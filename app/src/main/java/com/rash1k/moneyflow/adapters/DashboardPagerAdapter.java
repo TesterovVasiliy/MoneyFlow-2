@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.rash1k.moneyflow.R;
 import com.rash1k.moneyflow.fragments.ExpensesFragment;
+import com.rash1k.moneyflow.fragments.IncomesFragment;
 
 
 public class DashboardPagerAdapter extends FragmentPagerAdapter {
@@ -30,28 +31,24 @@ public class DashboardPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        DefaultFragment defaultFragment;
+        Fragment fragment = null;
         Bundle argBundle;
 
         switch (position) {
             case FRAGMENT_CASH_FLOW:
-                defaultFragment = new DefaultFragment();
+                fragment = new DefaultFragment();
                 argBundle = new Bundle();
                 argBundle.putString(DefaultFragment.KEY_NAME, context.getResources().getString(R.string.title_tab_cash_flow));
-                defaultFragment.setArguments(argBundle);
-                return defaultFragment;
-
+                fragment.setArguments(argBundle);
+                break;
             case FRAGMENT_EXPENSES:
-                return new ExpensesFragment();
+                fragment = new ExpensesFragment();
+                break;
             case FRAGMENT_INCOMES:
-                defaultFragment = new DefaultFragment();
-                argBundle = new Bundle();
-                argBundle.putString(DefaultFragment.KEY_NAME, context.getResources().getString(R.string.title_tab_incomes));
-                defaultFragment.setArguments(argBundle);
-                return defaultFragment;
+                fragment = new IncomesFragment();
+                break;
         }
-
-        return null;
+        return fragment;
     }
 
 
@@ -62,22 +59,24 @@ public class DashboardPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
+        String pageTitle = null;
 
         switch (position) {
             case FRAGMENT_CASH_FLOW:
-
-                return context.getResources().getString(R.string.title_tab_cash_flow);
-
+                pageTitle =  context.getResources().getString(R.string.title_tab_cash_flow);
+                break;
             case FRAGMENT_EXPENSES:
-                return context.getResources().getString(R.string.title_tab_expenses);
+                pageTitle =  context.getResources().getString(R.string.title_tab_expenses);
+                break;
             case FRAGMENT_INCOMES:
-                return context.getResources().getString(R.string.title_tab_incomes);
+                pageTitle =  context.getResources().getString(R.string.title_tab_incomes);
+                break;
         }
-
-        return super.getPageTitle(position);
+        return pageTitle;
     }
 
     public static class DefaultFragment extends Fragment {
+
         private static final String KEY_NAME = "name";
 
         @Nullable
@@ -90,4 +89,5 @@ public class DashboardPagerAdapter extends FragmentPagerAdapter {
             return view;
         }
     }
-}
+
+   }

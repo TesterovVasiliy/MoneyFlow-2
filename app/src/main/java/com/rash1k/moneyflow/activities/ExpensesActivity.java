@@ -19,7 +19,7 @@ public class ExpensesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expenses);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled( true);
 
         rvExpenses = (RecyclerView) findViewById(R.id.rvExpenses);
 

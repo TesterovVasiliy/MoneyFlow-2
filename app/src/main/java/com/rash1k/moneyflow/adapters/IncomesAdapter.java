@@ -36,7 +36,7 @@ public class IncomesAdapter extends RecyclerView.Adapter<IncomesAdapter.InnerVie
     public void onBindViewHolder(InnerViewHolder holder, int position) {
            mCursor.moveToPosition(position);
 
-        holder.tvName.setText(mCursor.getString(mCursor.getColumnIndex(Prefs.INCOME_NAMES_FIELD_NAME)));
+        holder.tvName.setText(mCursor.getString(mCursor.getColumnIndex(Prefs.INCOMES_NAMES_FIELD_NAME)));
         holder.tvVolume.setText(mCursor.getString(mCursor.getColumnIndex(Prefs.INCOMES_FIELD_VOLUME)));
         holder.tvDate.setText(mCursor.getString(mCursor.getColumnIndex(Prefs.INCOMES_FIELD_DATE)));
     }

@@ -11,10 +11,10 @@ android:orientation="vertical">
     android:layout_height="wrap_content" />
 
 
-    <com.rash1k.moneyflow.views.RoundChart
+   <!-- <com.rash1k.moneyflow.views.RoundChart
         android:id="@+id/rcExpenses"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"/>-->
 
 </FrameLayout>

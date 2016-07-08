@@ -1,3 +1,4 @@
+/*
 package com.rash1k.moneyflow.views;
 
 import android.content.Context;
@@ -5,17 +6,21 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 import com.rash1k.moneyflow.R;
 
-public class RoundChart extends View {
+public class RoundChart extends SurfaceView {
     private static final String LOG_TAG = "myLogRound";
     //    private Random r = new Random();
 
     private static int MY_DIAMETER;
+    private SurfaceHolder surfaceHolder;
 
     RectF rect;
     Paint paint;
@@ -23,24 +28,62 @@ public class RoundChart extends View {
     private float plan;
     private int anglePercent;
     private float angleValue;
+    Canvas canvas;
 
-    public void setAnglePercent(int anglePercent) {
-        this.anglePercent = anglePercent;
+
+    public RoundChart(Context context) {
+        super(context);
+        init();
     }
-
 
     public RoundChart(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
+    public RoundChart(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-//        setBackgroundColor(Color.RED);
-        //        canvas.drawColor(color)
-//        int color = Color.rgb(r.nextInt(256), r.nextInt(256), r.nextInt(256));
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
 
+            Log.d(LOG_TAG, "handleMessage: " + msg.what);
+
+//            drawCircleWithPercent(canvas,35);
+        }
+    };
+
+    private void init() {
+
+        AnimatePercentThread animatePercentThread = new AnimatePercentThread(35);
+
+        animatePercentThread.start();
+
+        surfaceHolder = getHolder();
+        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+
+            }
+        });
+
+    }
+
+    private void drawCircleWithPercent(Canvas canvas,int what) {
         int colorCurrent = 1;
         int colorPlan = 1;
         rect = new RectF(0L, 0L, MY_DIAMETER, MY_DIAMETER);
@@ -63,7 +106,7 @@ public class RoundChart extends View {
 
         float angle = current * 360 / plan;
 
-        canvas.drawArc(rect, 270L, angle, true, paint);
+//        canvas.drawArc(rect, 270L, angle, true, paint);
 
         paint.setColor(Color.WHITE);
 
@@ -82,6 +125,12 @@ public class RoundChart extends View {
         canvas.drawText(anglePercent + "%", (MY_DIAMETER - textWidth) / 2, (MY_DIAMETER / 2) + MY_DIAMETER / 10 - MY_DIAMETER / 55, paint);
 
     }
+
+
+    public void setAnglePercent(int anglePercent) {
+        this.anglePercent = anglePercent;
+    }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -102,13 +151,48 @@ public class RoundChart extends View {
         draw(new Canvas());
     }
 
-    public void setValues(int anglePercent) {
+    public void setValues(int percent) {
 
         this.anglePercent = anglePercent;
-        angleValue = anglePercent * 3.6F;
+        angleValue = percent * 3.6F;
         draw(new Canvas());
     }
 
+    private class AnimatePercentThread extends Thread {
 
+        private float roundPercent;
+        private RectF rectF;
+        private Canvas canvas;
+        private Paint paint;
+
+        public AnimatePercentThread(float roundPercent) {
+            this.roundPercent = roundPercent;
+        }
+
+        @Override
+        public void run() {
+            int currentAngle = 0;
+
+            while (currentAngle < roundPercent) {
+                try {
+                    Thread.sleep(16);
+                    currentAngle++;
+
+//                    handler.sendEmptyMessage(currentAngle);
+
+                    Canvas canvas = getHolder().lockCanvas();
+
+                    if (canvas != null) {
+                        drawCircleWithPercent(canvas,35);
+                    }
+
+//                    canvas.drawArc(rectF, 270, currentAngle, true, paint);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
 
+*/

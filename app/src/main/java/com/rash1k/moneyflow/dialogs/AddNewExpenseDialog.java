@@ -9,14 +9,15 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.Adapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.rash1k.moneyflow.R;
 import com.rash1k.moneyflow.services.MyIntentService;
@@ -28,6 +29,7 @@ public class AddNewExpenseDialog extends DialogFragment implements LoaderManager
     private EditText etVolumeOfExpenses;
     private AutoCompleteTextView acNameOfExpenses;
     private CheckBox chbCritical;
+    private SimpleCursorAdapter simpleCursorAdapter;
 
     @NonNull
     @Override
@@ -35,12 +37,20 @@ public class AddNewExpenseDialog extends DialogFragment implements LoaderManager
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.activity_add_new_expense_dialog, null, false);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.activity_add_new_expense_dialog, new LinearLayout(getActivity()), false);
 
 
         etVolumeOfExpenses = (EditText) view.findViewById(R.id.etVolumeOfExpense);
         acNameOfExpenses = (AutoCompleteTextView) view.findViewById(R.id.acNameOfExpense);
         chbCritical = (CheckBox) view.findViewById(R.id.chbCriticalExpense);
+
+        simpleCursorAdapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_dropdown_item_1line,
+                null,
+                new String[]{Prefs.EXPENSES_NAMES_FIELD_NAME},
+                new int[]{android.R.id.text1},
+                Adapter.NO_SELECTION);
+        acNameOfExpenses.setAdapter(simpleCursorAdapter);
 
         builder.setView(view)
                 .setMessage(R.string.message_add_new_expense_dialog)
@@ -59,11 +69,9 @@ public class AddNewExpenseDialog extends DialogFragment implements LoaderManager
                     }
                 });
 
-        getActivity().getSupportLoaderManager().initLoader(Prefs.ID_LOADER_EXPENSE_NAMES, null, this);
+        getActivity().getSupportLoaderManager().initLoader(Prefs.ID_LOADER_EXPENSES_NAMES, null, this);
         return builder.create();
     }
-
-
 
 
     private void addNewExpense() {
@@ -79,43 +87,20 @@ public class AddNewExpenseDialog extends DialogFragment implements LoaderManager
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (id == Prefs.ID_LOADER_EXPENSE_NAMES) {
-            return new CursorLoader(getActivity(), Prefs.URI_EXPENSES_NAMES, null, null, null, null);
-        }
-        return null;
+
+        return new CursorLoader(getActivity(), Prefs.URI_EXPENSES_NAMES, null, null, null, null);
+
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        /*SimpleCursorAdapter simpleCursorAdapter = new SimpleCursorAdapter(getContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                data,
-                new String[]{Prefs.EXPENSE_NAMES_FIELD_NAME},
-                new int[]{android.R.id.text1},
-                Adapter.NO_SELECTION);*/
-
-        int i = 0;
-        String[] arrayCursor = new String[data.getCount()];
-
-
-        int columnIndex = data.getColumnIndex(Prefs.EXPENSE_NAMES_FIELD_NAME);
-        for (data.moveToFirst(); (i<data.getCount() &&(!data.isAfterLast())); data.moveToNext(),i++) {
-
-            arrayCursor[i] = data.getString(columnIndex);
-
-        }
-
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, arrayCursor);
-
-        acNameOfExpenses.setAdapter(arrayAdapter);
-
-
+        simpleCursorAdapter.swapCursor(data);
     }
 
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.d(Prefs.LOG_TAG, "onLoaderReset: " + loader);
+        simpleCursorAdapter.swapCursor(null);
     }
 
 }

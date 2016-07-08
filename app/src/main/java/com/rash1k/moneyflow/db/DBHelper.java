@@ -3,7 +3,6 @@ package com.rash1k.moneyflow.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.rash1k.moneyflow.util.Prefs;
 
@@ -35,10 +34,10 @@ Table expense_names
 
     private static final String CREATE_TABLE_EXPENSE_NAMES = String.format(
             "CREATE TABLE %s (%s integer primary key autoincrement, %s text, %s integer);",
-            Prefs.TABLE_NAME_EXPENSE_NAMES,
+            Prefs.TABLE_NAME_EXPENSES_NAMES,
             Prefs.FIELD_ID,
-            Prefs.EXPENSE_NAMES_FIELD_NAME,
-            Prefs.EXPENSE_NAMES_FIELD_CRITICAL);
+            Prefs.EXPENSES_NAMES_FIELD_NAME,
+            Prefs.EXPENSES_NAMES_FIELD_CRITICAL);
 
      /*Table incomes
     - id
@@ -63,9 +62,9 @@ Table expense_names
 
     private static final String CREATE_TABLE_INCOME_NAMES = String.format(
             "CREATE TABLE %s (%s integer primary key autoincrement, %s text);",
-            Prefs.TABLE_NAME_INCOME_NAMES,
+            Prefs.TABLE_NAME_INCOMES_NAMES,
             Prefs.FIELD_ID,
-            Prefs.INCOME_NAMES_FIELD_NAME);
+            Prefs.INCOMES_NAMES_FIELD_NAME);
 
 
     /*
@@ -109,7 +108,7 @@ Table expense_names
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(Prefs.LOG_WARN_SQL, "onUpgrade: " + oldVersion + " on the version: " + newVersion);
+      /*  Log.w(Prefs.LOG_WARN_SQL, "onUpgrade: " + oldVersion + " on the version: " + newVersion);
 
         if (oldVersion < newVersion) {
             db.execSQL(CREATE_TABLE_EXPENSE_NAMES);
@@ -118,6 +117,6 @@ Table expense_names
             db.execSQL(CREATE_TABLE_MONTHLY_CASH);
         } else {
             Log.d(Prefs.LOG_TAG, "You have current version");
-        }
+        }*/
     }
 }

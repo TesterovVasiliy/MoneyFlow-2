@@ -10,14 +10,14 @@ public final class Prefs {
 
     public static final String RAW_QUERY_ALL_EXPENSES = "SELECT expense_names.name, expenses.volume, expense_names.critical, expenses.date FROM expenses INNER JOIN expense_names ON expense_names._id = expenses.id_passive;";
     public static final String RAW_QUERY_ALL_EXPENSES_2 = Prefs.TABLE_NAME_EXPENSES + " INNER JOIN " +
-            Prefs.TABLE_NAME_EXPENSE_NAMES + " ON (" +
-            Prefs.TABLE_NAME_EXPENSE_NAMES + "." +
+            Prefs.TABLE_NAME_EXPENSES_NAMES + " ON (" +
+            Prefs.TABLE_NAME_EXPENSES_NAMES + "." +
             Prefs.FIELD_ID + " = " +
             Prefs.TABLE_NAME_EXPENSES + "." +
             Prefs.EXPENSES_FIELD_ID_PASSIVE + ");";
 
     public static final String RAW_QUERY_ALL_INCOMES = Prefs.TABLE_NAME_INCOMES + " INNER JOIN " +
-            Prefs.TABLE_NAME_INCOME_NAMES + " ON (" + Prefs.TABLE_NAME_INCOME_NAMES + "." +
+            Prefs.TABLE_NAME_INCOMES_NAMES + " ON (" + Prefs.TABLE_NAME_INCOMES_NAMES + "." +
             Prefs.FIELD_ID + " = " + Prefs.TABLE_NAME_INCOMES + "." +
             Prefs.INCOMES_FIELD_ID_PASSIVE + ");";
 
@@ -44,9 +44,9 @@ public final class Prefs {
     public static final String EXPENSES_FIELD_DATE = "date";
 
     //The Table Expense Names
-    public static final String TABLE_NAME_EXPENSE_NAMES = "expense_names";
-    public static final String EXPENSE_NAMES_FIELD_NAME = "name";
-    public static final String EXPENSE_NAMES_FIELD_CRITICAL = "critical";
+    public static final String TABLE_NAME_EXPENSES_NAMES = "expense_names";
+    public static final String EXPENSES_NAMES_FIELD_NAME = "name";
+    public static final String EXPENSES_NAMES_FIELD_CRITICAL = "critical";
 
     //The Table Incomes constants:
 
@@ -58,8 +58,8 @@ public final class Prefs {
     public static final String INCOMES_FIELD_DATE = "date";
     //The Table Income_names:
 
-    public static final String TABLE_NAME_INCOME_NAMES = "income_names";
-    public static final String INCOME_NAMES_FIELD_NAME = "name";
+    public static final String TABLE_NAME_INCOMES_NAMES = "income_names";
+    public static final String INCOMES_NAMES_FIELD_NAME = "name";
 
 //    The Table Monthly_cash:
 
@@ -72,6 +72,8 @@ public final class Prefs {
     public static final String MONTHLY_FIELD_ENTRY_BALANCE = "entry_balance";
     public static final String MONTHLY_FIELD_EXPENSE_PLAN = "expense_plan";
     public static final String MONTHLY_FIELD_INCOME_PLAN = "income_plan";
+
+
 
     //The provider constants:
 
@@ -88,7 +90,6 @@ public final class Prefs {
     public static final String URI_EXPENSES_NAMES_PATH = "expenses_names";
     public static final Uri URI_EXPENSES_NAMES = Uri.parse(URI_SCHEMA_PROVIDER + URI_EXPENSES_NAMES_AUTHORITIES + "/" + URI_EXPENSES_NAMES_PATH);
 
-
     public static final String URI_ALL_EXPENSES_PATH = "all_expenses";
     public static final Uri URI_ALL_EXPENSES = Uri.parse("content://" + URI_EXPENSES_NAMES_AUTHORITIES + "/" + URI_ALL_EXPENSES_PATH);
 
@@ -100,12 +101,12 @@ public final class Prefs {
 
     //Income Names:
 
-    public static final String URI_INCOME_NAMES_AUTHORITIES = "com.rash1k.moneyflow.provider";
-    public static final String URI_INCOME_NAMES_PATH = "income_names";
-    public static final Uri URI_INCOME_NAMES = Uri.parse(URI_SCHEMA_PROVIDER + URI_INCOME_NAMES_AUTHORITIES + "/" + URI_INCOMES_PATH);
+    public static final String URI_INCOMES_NAMES_AUTHORITIES = "com.rash1k.moneyflow.provider";
+    public static final String URI_INCOMES_NAMES_PATH = "income_names";
+    public static final Uri URI_INCOMES_NAMES = Uri.parse(URI_SCHEMA_PROVIDER + URI_INCOMES_NAMES_AUTHORITIES + "/" + URI_INCOMES_NAMES_PATH);
 
     public static final String URI_ALL_INCOMES_PATH = "all_incomes";
-    public static final Uri URI_ALL_INCOMES = Uri.parse(URI_SCHEMA_PROVIDER + URI_INCOME_NAMES_AUTHORITIES + "/" + URI_ALL_INCOMES_PATH);
+    public static final Uri URI_ALL_INCOMES = Uri.parse(URI_SCHEMA_PROVIDER + URI_INCOMES_NAMES_AUTHORITIES + "/" + URI_ALL_INCOMES_PATH);
 
 //    Monthly Cash:
 
@@ -114,8 +115,8 @@ public final class Prefs {
     public static final Uri URI_MONTHLY_CASH = Uri.parse(URI_SCHEMA_PROVIDER + URI_MONTHLY_AUTHORITIES + "/" + URI_MONTHLY_PATH);
 
     //Loader Constants
-    public static final int ID_LOADER_EXPENSE_NAMES = 2;
-    public static final int ID_LOADER_INCOME_NAMES = 3;
-    public static final int ID_LOADER_EXPENSES_FRAGMENT = 1;
+    public static final int ID_LOADER_EXPENSES_NAMES = 1;
+    public static final int ID_LOADER_INCOMES_NAMES = 2;
+    public static final int ID_LOADER_EXPENSES_FRAGMENT = 3;
     public static final int ID_LOADER_INCOMES_FRAGMENT = 4;
 }

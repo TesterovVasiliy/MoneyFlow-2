@@ -1,6 +1,7 @@
 package com.rash1k.moneyflow.provider;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -20,7 +21,6 @@ public class MyContentProvider extends ContentProvider {
     private SQLiteDatabase database;
     private DBHelper dbHelper;
 
-    private static UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     private static final int URI_EXPENSES_CODE = 1;
     private static final int URI_EXPENSE_NAME_CODE = 2;
     private static final int URI_RAW_QUERY_ALL_EXPENSES_CODE = 3;
@@ -30,18 +30,16 @@ public class MyContentProvider extends ContentProvider {
     private static final int URI_RAW_QUERY_ALL_INCOMES_CODE = 6;
     private static final int URI_MONTHLY_CASH_CODE = 7;
 
+    private static UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
     static {
         uriMatcher.addURI(Prefs.URI_EXPENSES_AUTHORITIES, Prefs.URI_EXPENSES_PATH, URI_EXPENSES_CODE);
-
         uriMatcher.addURI(Prefs.URI_EXPENSES_NAMES_AUTHORITIES, Prefs.URI_EXPENSES_NAMES_PATH, URI_EXPENSE_NAME_CODE);
-
         uriMatcher.addURI(Prefs.URI_EXPENSES_NAMES_AUTHORITIES, Prefs.URI_ALL_EXPENSES_PATH, URI_RAW_QUERY_ALL_EXPENSES_CODE);
 
         uriMatcher.addURI(Prefs.URI_INCOMES_AUTHORITIES, Prefs.URI_INCOMES_PATH, URI_INCOMES_CODE);
-
-        uriMatcher.addURI(Prefs.URI_INCOME_NAMES_AUTHORITIES, Prefs.URI_INCOME_NAMES_PATH, URI_INCOME_NAMES_CODE);
-
-        uriMatcher.addURI(Prefs.URI_INCOME_NAMES_AUTHORITIES, Prefs.URI_ALL_INCOMES_PATH, URI_RAW_QUERY_ALL_INCOMES_CODE);
+        uriMatcher.addURI(Prefs.URI_INCOMES_NAMES_AUTHORITIES, Prefs.URI_INCOMES_NAMES_PATH, URI_INCOME_NAMES_CODE);
+        uriMatcher.addURI(Prefs.URI_INCOMES_NAMES_AUTHORITIES, Prefs.URI_ALL_INCOMES_PATH, URI_RAW_QUERY_ALL_INCOMES_CODE);
 
         uriMatcher.addURI(Prefs.URI_MONTHLY_AUTHORITIES, Prefs.URI_MONTHLY_PATH, URI_MONTHLY_CASH_CODE);
     }
@@ -60,26 +58,38 @@ public class MyContentProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
 
         database = dbHelper.getWritableDatabase();
+        ContentResolver resolver = getContext().getContentResolver();
 
         switch (uriMatcher.match(uri)) {
             case URI_EXPENSES_CODE:
                 uri = insertUri(uri, Prefs.TABLE_NAME_EXPENSES, values);
                 updateDataMonthlyCash(values);
+                resolver.notifyChange(Prefs.URI_ALL_EXPENSES, null);
+                resolver.notifyChange(Prefs.URI_MONTHLY_CASH, null);
                 break;
             case URI_EXPENSE_NAME_CODE:
-                uri = insertUri(uri, Prefs.TABLE_NAME_EXPENSE_NAMES, values);
-                updateDataMonthlyCash(values);
+                uri = insertUri(uri, Prefs.TABLE_NAME_EXPENSES_NAMES, values);
+                resolver.notifyChange(Prefs.URI_ALL_INCOMES, null);
                 break;
             case URI_INCOMES_CODE:
                 uri = insertUri(uri, Prefs.TABLE_NAME_INCOMES, values);
+                updateDataMonthlyCash(values);
+                resolver.notifyChange(Prefs.URI_ALL_INCOMES, null);
+                resolver.notifyChange(Prefs.URI_MONTHLY_CASH, null);
                 break;
             case URI_INCOME_NAMES_CODE:
-                uri = insertUri(uri, Prefs.TABLE_NAME_INCOME_NAMES, values);
+                uri = insertUri(uri, Prefs.TABLE_NAME_INCOMES_NAMES, values);
+                resolver.notifyChange(Prefs.URI_ALL_INCOMES, null);
                 break;
         }
-        getContext().getContentResolver().notifyChange(uri, null);
-        database.close();
+        resolver.notifyChange(uri, null);
+//        database.close();
         return uri;
+    }
+
+    private Uri insertUri(Uri uri, String table, ContentValues values) {
+        long id = database.insert(table, null, values);
+        return ContentUris.withAppendedId(uri, id);
     }
 
     private void updateDataMonthlyCash(ContentValues contentValues) {
@@ -93,33 +103,31 @@ public class MyContentProvider extends ContentProvider {
             valueIncome = contentValues.getAsDouble(Prefs.INCOMES_FIELD_VOLUME);
         }
 
-
         contentValues.clear();
 
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
-
         String month = String.format("%tb", gregorianCalendar);
         String year = String.format("%tY", gregorianCalendar);
 
-        contentValues.put(Prefs.MONTHLY_FIELD_MONTH, month);
-        contentValues.put(Prefs.MONTHLY_FIELD_YEAR, year);
-        contentValues.put(Prefs.MONTHLY_FIELD_EXPENSE, valueExpenses);
-        contentValues.put(Prefs.MONTHLY_FIELD_INCOME, valueIncome);
+        Cursor cursor = query(Prefs.URI_MONTHLY_CASH, null, Prefs.MONTHLY_FIELD_MONTH + " = ?", new String[]{month}, null);
 
-
-        database.execSQL(String.format(Locale.getDefault(),
-                "UPDATE %s SET %s=%s, %s=%s,%s=%s+%f-%f, %s=%s+%f, %s=%s+%f where %s='%s' AND %s='%s';",
-                Prefs.TABLE_NAME_MONTHLY_CASH, Prefs.MONTHLY_FIELD_MONTH, month,
-                Prefs.MONTHLY_FIELD_YEAR, year, Prefs.MONTHLY_FIELD_CASH_FLOW,
-                Prefs.MONTHLY_FIELD_CASH_FLOW, valueIncome, valueExpenses, Prefs.MONTHLY_FIELD_EXPENSE,
-                Prefs.MONTHLY_FIELD_EXPENSE, valueExpenses, Prefs.MONTHLY_FIELD_INCOME,
-                Prefs.MONTHLY_FIELD_INCOME, valueIncome, Prefs.MONTHLY_FIELD_MONTH, month,
-                Prefs.MONTHLY_FIELD_YEAR, year));
-    }
-
-    private Uri insertUri(Uri uri, String table, ContentValues values) {
-        long id = database.insert(table, null, values);
-        return ContentUris.withAppendedId(uri, id);
+        if (cursor != null && cursor.getCount() == 0) {
+            contentValues.put(Prefs.MONTHLY_FIELD_MONTH, month);
+            contentValues.put(Prefs.MONTHLY_FIELD_YEAR, year);
+            contentValues.put(Prefs.MONTHLY_FIELD_EXPENSE, valueExpenses);
+            contentValues.put(Prefs.MONTHLY_FIELD_INCOME, valueIncome);
+            insert(Prefs.URI_MONTHLY_CASH, contentValues);
+            cursor.close();
+        } else {
+            database.execSQL(String.format(Locale.getDefault(),
+                    "UPDATE %s SET %s=%s, %s=%s,%s=%s+%f-%f, %s=%s+%f, %s=%s+%f where %s='%s' AND %s='%s';",
+                    Prefs.TABLE_NAME_MONTHLY_CASH, Prefs.MONTHLY_FIELD_MONTH, month,
+                    Prefs.MONTHLY_FIELD_YEAR, year, Prefs.MONTHLY_FIELD_CASH_FLOW,
+                    Prefs.MONTHLY_FIELD_CASH_FLOW, valueIncome, valueExpenses, Prefs.MONTHLY_FIELD_EXPENSE,
+                    Prefs.MONTHLY_FIELD_EXPENSE, valueExpenses, Prefs.MONTHLY_FIELD_INCOME,
+                    Prefs.MONTHLY_FIELD_INCOME, valueIncome, Prefs.MONTHLY_FIELD_MONTH, month,
+                    Prefs.MONTHLY_FIELD_YEAR, year));
+        }
     }
 
     @Override
@@ -134,7 +142,7 @@ public class MyContentProvider extends ContentProvider {
                         selection, selectionArgs, null, null, sortOrder);
                 break;
             case URI_EXPENSE_NAME_CODE:
-                cursor = database.query(Prefs.TABLE_NAME_EXPENSE_NAMES, projection,
+                cursor = database.query(Prefs.TABLE_NAME_EXPENSES_NAMES, projection,
                         selection, selectionArgs, null, null, sortOrder);
                 break;
             case URI_RAW_QUERY_ALL_EXPENSES_CODE:
@@ -146,7 +154,7 @@ public class MyContentProvider extends ContentProvider {
                         null, null, sortOrder);
                 break;
             case URI_INCOME_NAMES_CODE:
-                cursor = database.query(Prefs.TABLE_NAME_INCOME_NAMES, projection, selection,
+                cursor = database.query(Prefs.TABLE_NAME_INCOMES_NAMES, projection, selection,
                         selectionArgs, null, null, sortOrder);
                 break;
             case URI_RAW_QUERY_ALL_INCOMES_CODE:
@@ -184,7 +192,7 @@ public class MyContentProvider extends ContentProvider {
                         selectionArgs);
                 break;
             case URI_EXPENSE_NAME_CODE:
-                updateId = database.update(Prefs.TABLE_NAME_EXPENSE_NAMES, values, selection,
+                updateId = database.update(Prefs.TABLE_NAME_EXPENSES_NAMES, values, selection,
                         selectionArgs);
                 break;
             case URI_INCOMES_CODE:
@@ -192,7 +200,7 @@ public class MyContentProvider extends ContentProvider {
                 break;
             case URI_INCOME_NAMES_CODE:
 
-                updateId = database.update(Prefs.TABLE_NAME_INCOME_NAMES, values, selection, selectionArgs);
+                updateId = database.update(Prefs.TABLE_NAME_INCOMES_NAMES, values, selection, selectionArgs);
                 break;
             case URI_MONTHLY_CASH_CODE:
                 updateId = database.update(Prefs.TABLE_NAME_MONTHLY_CASH, values, selection, selectionArgs);
@@ -217,13 +225,13 @@ public class MyContentProvider extends ContentProvider {
                 deleteId = database.delete(Prefs.TABLE_NAME_EXPENSES, selection, selectionArgs);
                 break;
             case URI_EXPENSE_NAME_CODE:
-                deleteId = database.delete(Prefs.TABLE_NAME_EXPENSE_NAMES, selection, selectionArgs);
+                deleteId = database.delete(Prefs.TABLE_NAME_EXPENSES_NAMES, selection, selectionArgs);
                 break;
             case URI_INCOMES_CODE:
                 deleteId = database.delete(Prefs.TABLE_NAME_INCOMES, selection, selectionArgs);
                 break;
             case URI_INCOME_NAMES_CODE:
-                deleteId = database.delete(Prefs.TABLE_NAME_INCOME_NAMES, selection, selectionArgs);
+                deleteId = database.delete(Prefs.TABLE_NAME_INCOMES_NAMES, selection, selectionArgs);
                 break;
             case URI_MONTHLY_CASH_CODE:
                 deleteId = database.delete(Prefs.TABLE_NAME_MONTHLY_CASH, selection, selectionArgs);

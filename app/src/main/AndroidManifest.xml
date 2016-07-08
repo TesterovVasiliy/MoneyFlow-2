@@ -14,7 +14,8 @@
         <activity
             android:name=".activities.DashboardActivity"
             android:label="@string/title_activity_dashboard"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,20 +25,20 @@
         <activity
             android:name=".activities.ExpensesActivity"
             android:label="@string/expenses_activity_name"
-            android:parentActivityName=".activities.DashboardActivity">
+            android:parentActivityName=".activities.ExpensesActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.DashboardActivity" />
+                android:value=".activities.ExpensesActivity" />
         </activity>
 
         <activity
             android:name=".activities.IncomesActivity"
             android:label="@string/incomes_activity_name"
-            android:parentActivityName=".activities.DashboardActivity">
+            android:parentActivityName=".activities.IncomesActivity">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.DashboardActivity" />
+                android:value=".activities.IncomesActivity" />
 
         </activity>
 

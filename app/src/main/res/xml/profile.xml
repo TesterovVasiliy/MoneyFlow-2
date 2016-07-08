@@ -5,22 +5,22 @@
         android:title="@string/pref_category_account_info">
 
         <EditTextPreference
+            android:defaultValue="0"
             android:inputType="textPassword"
-
             android:key="@string/pref_key_login"
-            android:title="@string/pref_title_login" />
+            android:title="@string/pref_title_login"/>
         <!--android:icon="@mipmap/ic_contacts_black"-->
         <!--android:summary="@string/pref_summary_login"-->
         <EditTextPreference
+            android:defaultValue="0"
             android:inputType="textPassword"
             android:key="@string/pref_key_password"
-
-            android:title="@string/pref_title_password" />
+            android:title="@string/pref_title_password"/>
         <!--android:summary="@string/pref_summary_password_preference"-->
         <EditTextPreference
             android:inputType="textEmailAddress"
             android:key="@string/pref_key_email"
-            android:title="@string/pref_title_email" />
+            android:title="@string/pref_title_email"/>
 
     </PreferenceCategory>
 
@@ -29,25 +29,26 @@
         android:title="@string/personal_data_preference_category">
 
         <EditTextPreference
+            android:defaultValue="0"
             android:inputType="textPersonName"
             android:key="@string/pref_key_ame"
-            android:title="@string/pref_title_name" />
+            android:title="@string/pref_title_name"/>
 
         <EditTextPreference
+            android:defaultValue="0"
             android:inputType="textPersonName"
             android:key="@string/pref_key_last_name"
-            android:title="@string/pref_title_last_name" />
+            android:title="@string/pref_title_last_name"/>
 
         <SwitchPreference
+            android:defaultValue="true"
             android:enabled="true"
-            android:summaryOn="@string/pref_summary_sex_on"
-            android:summaryOff="@string/pref_summary_sex_off"
             android:inputType="textAutoCorrect"
             android:key="@string/pref_key_sex"
-            android:defaultValue="true"
+            android:summaryOff="@string/pref_summary_sex_off"
+            android:summaryOn="@string/pref_summary_sex_on"
             android:title="@string/pref_title_sex"/>
     </PreferenceCategory>
-
 
 
 </PreferenceScreen>

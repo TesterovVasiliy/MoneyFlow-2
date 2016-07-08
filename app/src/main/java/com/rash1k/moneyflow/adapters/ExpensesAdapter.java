@@ -36,7 +36,7 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesAdapter.InnerV
 
         mCursor.moveToPosition(position);
 
-        holder.tvName.setText(mCursor.getString(mCursor.getColumnIndex(Prefs.EXPENSE_NAMES_FIELD_NAME)));
+        holder.tvName.setText(mCursor.getString(mCursor.getColumnIndex(Prefs.EXPENSES_NAMES_FIELD_NAME)));
 
         holder.tvVolume.setText(mCursor.getString(mCursor.getColumnIndex(Prefs.EXPENSES_FIELD_VOLUME)));
         holder.tvDate.setText(mCursor.getString(mCursor.getColumnIndex(Prefs.EXPENSES_FIELD_DATE)));

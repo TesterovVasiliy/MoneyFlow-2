@@ -10,9 +10,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.Adapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
@@ -24,6 +24,7 @@ public class AddNewIncomeDialog extends DialogFragment implements LoaderManager.
 
     private AutoCompleteTextView acNameOfIncome;
     private EditText etVolumeOfIncome;
+    private SimpleCursorAdapter simpleCursorAdapter;
 
     @NonNull
     @Override
@@ -35,6 +36,13 @@ public class AddNewIncomeDialog extends DialogFragment implements LoaderManager.
 
         acNameOfIncome = (AutoCompleteTextView) view.findViewById(R.id.acNameOfIncome);
         etVolumeOfIncome = (EditText) view.findViewById(R.id.etVolumeOfIncome);
+
+        simpleCursorAdapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_dropdown_item_1line,
+                null, new String[]{Prefs.INCOMES_NAMES_FIELD_NAME}, new int[]{android.R.id.text1},
+                Adapter.NO_SELECTION);
+
+        acNameOfIncome.setAdapter(simpleCursorAdapter);
 
         builder.setView(view)
                 .setMessage(R.string.message_add_new_income_dialog)
@@ -52,7 +60,7 @@ public class AddNewIncomeDialog extends DialogFragment implements LoaderManager.
                     }
                 });
 
-        getActivity().getSupportLoaderManager().initLoader(Prefs.ID_LOADER_INCOME_NAMES, null, this);
+        getActivity().getSupportLoaderManager().initLoader(Prefs.ID_LOADER_INCOMES_NAMES, null, this);
 
         return builder.create();
     }
@@ -73,35 +81,21 @@ public class AddNewIncomeDialog extends DialogFragment implements LoaderManager.
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (id == Prefs.ID_LOADER_INCOME_NAMES) {
-
-            return new CursorLoader(getActivity(), Prefs.URI_INCOME_NAMES, null, null, null, null);
+        if (id == Prefs.ID_LOADER_INCOMES_NAMES) {
+            return new CursorLoader(getActivity(), Prefs.URI_INCOMES_NAMES, null, null, null, null);
         }
-
         return null;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-        int i = 0;
-
-        String[] arrayCursor = new String[data.getCount()];
-
-        int columnIndex = data.getColumnIndex(Prefs.EXPENSE_NAMES_FIELD_NAME);
-        for (data.moveToFirst(); (i < data.getCount() && !(data.isAfterLast())); data.moveToNext(),i++) {
-
-            arrayCursor[i] = data.getString(columnIndex);
-        }
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, arrayCursor);
-        acNameOfIncome.setAdapter(arrayAdapter);
-
+        simpleCursorAdapter.swapCursor(data);
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.d(Prefs.LOG_TAG, "onLoaderReset: " + loader);
+        simpleCursorAdapter.swapCursor(null);
 
     }
 }

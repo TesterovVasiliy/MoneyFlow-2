@@ -21,6 +21,7 @@ public class MyIntentService extends IntentService {
     private static final String EXTRA_EXPENSE_CRITICAL = "com.rash1k.moneyflow.services.extra.EXPENSE_CRITICAL";
 
     private static final String ACTION_INSERT_INCOME = "com.rash1k.moneyflow.services.action.INSERT_INCOME";
+
     private static final String EXTRA_INCOME_NAME = "com.rash1k.moneyflow.services.extra.INCOME_NAME";
     private static final String EXTRA_INCOME_VOLUME = "com.rash1k.moneyflow.services.extra.INCOME_VOLUME";
 
@@ -71,8 +72,8 @@ public class MyIntentService extends IntentService {
     private void handleActionInsertExpense(String name, double volume, int critical) {
         ContentValues cvExpenseName = new ContentValues();
 
-        cvExpenseName.put(Prefs.EXPENSE_NAMES_FIELD_NAME, name);
-        cvExpenseName.put(Prefs.EXPENSE_NAMES_FIELD_CRITICAL, critical);
+        cvExpenseName.put(Prefs.EXPENSES_NAMES_FIELD_NAME, name);
+        cvExpenseName.put(Prefs.EXPENSES_NAMES_FIELD_CRITICAL, critical);
 
         Uri expenseNamesUri = getContentResolver().insert(Prefs.URI_EXPENSES_NAMES, cvExpenseName);
 
@@ -96,9 +97,9 @@ public class MyIntentService extends IntentService {
 
     private void handleActionInsertIncome(String name, double volume) {
         ContentValues cvIncomeNames = new ContentValues();
-        cvIncomeNames.put(Prefs.INCOME_NAMES_FIELD_NAME, name);
+        cvIncomeNames.put(Prefs.INCOMES_NAMES_FIELD_NAME, name);
 
-        Uri incomeNamesUri = getContentResolver().insert(Prefs.URI_INCOME_NAMES, cvIncomeNames);
+        Uri incomeNamesUri = getContentResolver().insert(Prefs.URI_INCOMES_NAMES, cvIncomeNames);
 
 //        long insertedId = Long.parseLong(incomeNamesUri.getLastPathSegment());
         long insertedId = ContentUris.parseId(incomeNamesUri);
